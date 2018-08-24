@@ -9,9 +9,9 @@ imports:
     - { resource: "@SyliusAdminApiBundle/Resources/config/app/config.yml" }
 
     - { resource: "@Brille24SyliusTierPricePlugin/Resources/config/config.yml"}
-    - { resource: "resources.yml" }
-
+    
     - { resource: "../../../../vendor/sylius/sylius/app/config/security.yml" }
+    - { resource: "resources.yml" }
 
 framework:
     translator: { fallbacks: ["%locale%", "en"] }
