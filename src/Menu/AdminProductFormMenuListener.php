@@ -11,14 +11,9 @@ declare(strict_types=1);
 
 namespace Brille24\SyliusTierPricePlugin\Menu;
 
-use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
+use Sylius\Bundle\AdminBundle\Event\ProductMenuBuilderEvent;
 use Symfony\Component\Translation\Translator;
 
-/**
- * Class AdminProductVariantFormMenuListener
- *
- * Adding the tier price point to the menu
- */
 final class AdminProductFormMenuListener
 {
     /**
@@ -31,12 +26,17 @@ final class AdminProductFormMenuListener
         $this->translator = $translator;
     }
 
-    public function addItems(MenuBuilderEvent $event): void
+    public function addItems(ProductMenuBuilderEvent $event): void
     {
         $menu = $event->getMenu();
 
+        if ($event->getProduct()->isConfigurable()) {
+            return;
+        }
+
         $TIERPRICE_TAB = '@Brille24SyliusTierPricePlugin/Resources/views/Admin/ProductVariant/Tab/_tierprice.html.twig';
-        $menu->addChild('tierprice')
+        $menu
+            ->addChild('tierprice')
             ->setAttribute('template', $TIERPRICE_TAB)
             ->setLabel($this->translator->trans('brille24_tier_price.ui.tier_prices'))
             ->setLabelAttribute('icon', 'dollar');

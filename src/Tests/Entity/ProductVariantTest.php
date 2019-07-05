@@ -14,14 +14,10 @@ namespace Brille24\SyliusTierPricePlugin\Tests\Entity;
 use Brille24\SyliusTierPricePlugin\Entity\ProductVariant;
 use Brille24\SyliusTierPricePlugin\Entity\TierPrice;
 use Brille24\SyliusTierPricePlugin\Entity\TierPriceInterface;
-use Brille24\SyliusTierPricePlugin\Traits\TierPriceableInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 
-class ProductVariantTest extends \PHPUnit_Framework_TestCase
+class ProductVariantTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var TierPriceableInterface */
-    private $productVariant;
-
     /** @var ChannelInterface */
     private $testChannel;
 
@@ -51,7 +47,11 @@ class ProductVariantTest extends \PHPUnit_Framework_TestCase
         return $result;
     }
 
-    /** @dataProvider data_getTierPricesForChannel */
+    /** @dataProvider data_getTierPricesForChannel
+     *
+     * @param array $givenTierPrices
+     * @param array $expectedTierPrices
+     */
     public function test_getTierPricesForChannel(array $givenTierPrices, array $expectedTierPrices): void
     {
         //## PREPARE
@@ -62,7 +62,7 @@ class ProductVariantTest extends \PHPUnit_Framework_TestCase
         $resultEntries = $productVariant->getTierPricesForChannel($this->testChannel);
 
         //## CHECK
-        $this->assertEquals(count($resultEntries), count($expectedTierPrices));
+        $this->assertCount(count($resultEntries), $expectedTierPrices);
         $i = 0;
         foreach ($resultEntries as $entry) {
             /** @var TierPrice $entry */

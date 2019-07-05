@@ -1,97 +1,48 @@
 <?php
-
+/**
+ * This file is part of the Brille24 tierprice plugin.
+ *
+ * (c) Brille24 GmbH
+ *
+ * For the full copyright and licence information, please view the LICENCE
+ * file that was distributed with this source code.
+ */
 declare(strict_types=1);
 
 namespace Brille24\SyliusTierPricePlugin\Factory;
 
-use Brille24\SyliusTierPricePlugin\Entity\ProductVariant;
-use Brille24\SyliusTierPricePlugin\Entity\TierPrice;
+use Brille24\SyliusTierPricePlugin\Entity\ProductVariantInterface;
 use Brille24\SyliusTierPricePlugin\Entity\TierPriceInterface;
-use Doctrine\ORM\EntityNotFoundException;
-use Sylius\Bundle\CoreBundle\Fixture\Factory\ExampleFactoryInterface;
-use Sylius\Bundle\CoreBundle\Fixture\OptionsResolver\LazyOption;
-use Sylius\Component\Channel\Repository\ChannelRepositoryInterface;
-use Sylius\Component\Core\Model\Channel;
-use Sylius\Component\Core\Model\Product;
-use Sylius\Component\Core\Repository\ProductVariantRepositoryInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sylius\Component\Resource\Factory\FactoryInterface;
 
-class TierPriceFactory implements ExampleFactoryInterface
+final class TierPriceFactory implements TierPriceFactoryInterface
 {
-    /**
-     * @var ProductVariantRepositoryInterface
-     */
-    private $productVariantRepository;
-    /**
-     * @var ChannelRepositoryInterface
-     */
-    private $channelRepository;
+    /** @var FactoryInterface */
+    private $factory;
 
-    public function __construct(
-        ProductVariantRepositoryInterface $productVariantRepository,
-        ChannelRepositoryInterface $channelRepository
-    ) {
-        $this->productVariantRepository = $productVariantRepository;
-        $this->channelRepository        = $channelRepository;
+    public function __construct(FactoryInterface $factory)
+    {
+        $this->factory = $factory;
     }
 
-    /**
-     * Creates a tierprice
-     *
-     * @param array $options The configuration of the tierprice
-     *
-     * @return TierPriceInterface
-     *
-     * @throws EntityNotFoundException
-     */
-    public function create(array $options = []): TierPriceInterface
+    /** {@inheritdoc} */
+    public function createNew(): object
     {
-        /** @var ProductVariant|null $productVariant */
-        $productVariant = $this->productVariantRepository->findOneBy(['code' => $options['product_variant']]);
-        if ($productVariant === null) {
-            throw new EntityNotFoundException('Create the product variant first');
-        }
-
-        return $this->createAtProductVariant($options, $productVariant);
+        return $this->factory->createNew();
     }
 
-    /**
-     * Configuring the options that are allowed in the factory
-     *
-     * @param OptionsResolver $resolver
-     */
-    protected function configureOption(OptionsResolver $resolver): void
-    {
-        $resolver->setDefault('quantity', 1);
-        $resolver->setAllowedTypes('quantity', 'integer');
-
-        $resolver->setDefault('price', 0);
-        $resolver->setAllowedTypes('price', 'integer');
-
-        $resolver->setDefault('product_variant', LazyOption::randomOne($this->productVariantRepository));
-        $resolver->setAllowedTypes('quantity', ProductVariant::class);
-
-        $resolver->setDefault('channel', LazyOption::randomOne($this->channelRepository));
-        $resolver->setAllowedTypes('quantity', Channel::class);
-    }
-
-    /**
-     * Creates a product variant and attaches the tier price
-     *
-     * @param array          $options
-     * @param ProductVariant $productVariant
-     *
-     * @return TierPriceInterface
-     */
-    public function createAtProductVariant(array $options = [], ProductVariant $productVariant): TierPriceInterface
-    {
-        $tierPrice = new TierPrice();
+    /** {@inheritdoc} */
+    public function createAtProductVariant(
+        ProductVariantInterface $productVariant,
+        array $options = []
+    ): TierPriceInterface {
+        /** @var TierPriceInterface $tierPrice */
+        $tierPrice = $this->createNew();
 
         $tierPrice->setQty($options['quantity']);
-        $tierPrice->setProductVariant($productVariant);
-
-        $tierPrice->setChannel($this->channelRepository->findOneBy(['code' => $options['channel']]));
+        $tierPrice->setChannel($options['channel']);
         $tierPrice->setPrice($options['price']);
+        $tierPrice->setProductVariant($productVariant);
 
         $productVariant->addTierPrice($tierPrice);
 

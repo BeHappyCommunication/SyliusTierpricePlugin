@@ -11,23 +11,18 @@ declare(strict_types=1);
 
 namespace Brille24\SyliusTierPricePlugin\Repository;
 
-use Brille24\SyliusTierPricePlugin\Entity\ProductVariantInterface;
 use Brille24\SyliusTierPricePlugin\Entity\TierPriceInterface;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Brille24\SyliusTierPricePlugin\Traits\TierPriceableInterface;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
 use Sylius\Component\Core\Model\ChannelInterface;
 
-class TierPriceRepository extends EntityRepository implements ObjectRepository
+class TierPriceRepository extends EntityRepository implements TierPriceRepositoryInterface
 {
-    /**
-     * Gets all tier prices for a product variant for a channel with quantity in ascending order
-     *
-     * @param ProductVariantInterface   $productVariant
-     * @param ChannelInterface          $channel
+    /** {@inheritdoc}
      *
      * @return TierPriceInterface[]
      */
-    public function getSortedTierPrices(ProductVariantInterface $productVariant, ChannelInterface $channel): array
+    public function getSortedTierPrices(TierPriceableInterface $productVariant, ChannelInterface $channel): array
     {
         return $this->findBy(['productVariant' => $productVariant, 'channel' => $channel], ['qty' => 'ASC']);
     }

@@ -1,24 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mamazu
- * Date: 09/01/18
- * Time: 11:32
- */
+declare(strict_types=1);
 
-
-namespace Brille24\Behat\Context;
-
+namespace Tests\Brille24\SyliusTierPricePlugin\Behat\Context;
 
 use Behat\Behat\Context\Context;
 use Brille24\SyliusTierPricePlugin\Entity\{
     ProductVariant, TierPrice, TierPriceInterface
 };
 use Sylius\Component\Core\Model\ProductInterface;
+use TierPriceFactoryInterface;
 
 final class TierPriceContext implements Context
 {
-
     /**
      * @Given /^"([^"]*)" has a tier price at (\d+) with ("[^"]+")$/
      */

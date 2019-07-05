@@ -1,7 +1,7 @@
 default:
   suites:
     ui_tierprices:
-      contexts_services:
+      contexts:
         # Database cleaner
         - sylius.behat.context.hook.doctrine_orm
 
@@ -53,4 +53,3 @@ default:
         - brille24.behat.context.tierprice
       filters:
         tags: "@tierprices && @ui"
-

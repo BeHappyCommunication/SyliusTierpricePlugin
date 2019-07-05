@@ -14,18 +14,15 @@ namespace Brille24\SyliusTierPricePlugin\Entity;
 
 use Brille24\SyliusTierPricePlugin\Traits\TierPriceableInterface;
 
-/**
- * Interface ProductVariantInterface
- */
 interface ProductVariantInterface extends TierPriceableInterface
 {
     /**
-     * @param TierPrice $tierPrice
+     * @param TierPriceInterface $tierPrice
      */
-    public function removeTierPrice(TierPrice $tierPrice): void;
+    public function removeTierPrice(TierPriceInterface $tierPrice): void;
 
     /**
-     * @param TierPrice $tierPrice
+     * @param TierPriceInterface $tierPrice
      */
-    public function addTierPrice(TierPrice $tierPrice): void;
+    public function addTierPrice(TierPriceInterface $tierPrice): void;
 }
